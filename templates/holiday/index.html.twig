@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HolidayController!{% endblock %}
+
+{% block body %}
+    {% if is_granted('ROLE_EMPLOYEE') %}
+        <p>Email : {{ app.user.email }}</p>
+    {% endif %}
+    <div id='calendar' data-controller="calendar" data-holidays='{{ publicHolidays|json_encode|raw }}'></div>
+{% endblock %}
