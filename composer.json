@@ -1,5 +1,5 @@
 {
-    "name": "symfony/skeleton",
+    "name": "tomspace/tomsholidays",
     "type": "project",
     "license": "MIT",
     "description": "A minimal Symfony project recommended to create bare bones applications",
@@ -54,6 +54,8 @@
         "symfony/polyfill-php82": "*"
     },
     "scripts": {
+        "phpcsf": "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix src --rules=@PSR12",
+        "phpstan": "vendor/bin/phpstan analyse -l max src",
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
@@ -77,6 +79,8 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^4.0",
+        "friendsofphp/php-cs-fixer": "^3.73",
+        "phpstan/phpstan": "^2.1",
         "symfony/maker-bundle": "^1.62",
         "symfony/stopwatch": "7.2.*",
         "symfony/web-profiler-bundle": "7.2.*"
