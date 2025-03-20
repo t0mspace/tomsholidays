@@ -1,12 +1,15 @@
-import { Calendar } from '@fullcalendar/core'
+import {Calendar} from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
 
-document.addEventListener('DOMContentLoaded', function () {
+function initCalendar() {
   const calendarEl = document.getElementById('calendar')
 
   if (calendarEl) {
-    const publicHolidays = JSON.parse(calendarEl.dataset.holidays)
+    // Get public holidays from data attribute if it exists
+    const publicHolidaysData = calendarEl.closest('[data-holidays]')?.dataset.holidays || '[]'
+    const publicHolidays = JSON.parse(publicHolidaysData)
+    const user= calendarEl.closest('[data-holidays]')?.dataset.user || '{}'
 
     const calendar = new Calendar(calendarEl, {
       plugins: [dayGridPlugin, interactionPlugin],
@@ -23,22 +26,12 @@ document.addEventListener('DOMContentLoaded', function () {
         center: 'title',
         right: 'dayGridMonth,dayGridWeek,dayGridDay'
       },
-      dateClick: function(info) {
-        alert('clicked ' + info.dateStr)
-
-        const event = new CustomEvent('calendar:dateClick', {
-          detail: { date: info.dateStr },
-          bubbles: true
-        });
-
-        calendarEl.dispatchEvent(event);
-      },
-      select: function(info) {
+      select: function (info) {
         console.log('selected ' + info.startStr + ' to ' + info.endStr)
 
-        const event = new CustomEvent('calendar:dateClick', {
-          detail: { dateStart: info.startStr, dateEnd: info.endStr},
-          bubbles: true
+        const event = new CustomEvent('calendar:dateSelected', {
+          bubbles: true, // Make sure this bubbles up
+          detail: {dateStart: info.startStr, dateEnd: info.endStr, user: user},
         });
 
         calendarEl.dispatchEvent(event);
@@ -46,5 +39,9 @@ document.addEventListener('DOMContentLoaded', function () {
     })
 
     calendar.render()
+    return calendar
   }
-})
+  return null
+}
+
+export default initCalendar;

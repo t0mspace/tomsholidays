@@ -1,70 +1,61 @@
-import { Controller } from '@hotwired/stimulus';
-import { Calendar } from '@fullcalendar/core'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from '@fullcalendar/interaction'
+import {Controller} from '@hotwired/stimulus';
+import {Modal} from 'bootstrap';
+import initCalendar from '../js/calendar';
 
-/*
- * This is an example Stimulus controller!
- *
- * Any element with a data-controller="hello" attribute will cause
- * this controller to be executed. The name "hello" comes from the filename:
- * hello_controller.js -> "hello"
- *
- * Delete this file or adapt it for your use!
- */
 export default class extends Controller {
+  data = {};
+  static targets = ["modal"]
+
   connect() {
-    const calendarEl = document.getElementById('calendar')
+    // Initialize calendar after controller connects
+    this.calendarInstance = initCalendar();
 
-    if (calendarEl) {
-      const publicHolidays = JSON.parse(calendarEl.dataset.holidays)
-
-      const calendar = new Calendar(calendarEl, {
-        plugins: [dayGridPlugin, interactionPlugin],
-        weekends: true,
-        selectable: true,
-        events: publicHolidays.map(event => ({
-          title: event.name,
-          start: new Date(event.date).toISOString(),
-          end: new Date(event.date).toISOString(),
-          allDay: true
-        })),
-        headerToolbar: {
-          left: 'prev,next',
-          center: 'title',
-          right: 'dayGridMonth,dayGridWeek,dayGridDay'
-        },
-        dateClick: function(info) {
-          alert('clicked ' + info.dateStr)
-
-          const event = new CustomEvent('calendar:dateClick', {
-            detail: { date: info.dateStr },
-            bubbles: true
-          });
-
-          calendarEl.dispatchEvent(event);
-        },
-        select: function(info) {
-          console.log('selected ' + info.startStr + ' to ' + info.endStr)
-
-          const event = new CustomEvent('calendar:dateClick', {
-            detail: { dateStart: info.startStr, dateEnd: info.endStr},
-            bubbles: true
-          });
-
-        }
-      })
-
-      calendar.render()
-    }
-    this.element.addEventListener('calendar:dateClick', this.handleDateClick.bind(this));
+    // Listen for custom event
+    this.element.addEventListener('calendar:dateSelected', this.handleDateSelected.bind(this));
   }
 
-  async handleDateClick(event) {
-    const selectedDate = event.detail.date;
-    console.log(`📅 Date cliquée : ${selectedDate}`);
+  disconnect() {
+    // Clean up when controller disconnects
+    if (this.calendarInstance) {
+      this.calendarInstance.destroy();
+    }
+  }
 
-    // 🔥 Envoi des données à Symfony via Fetch API
+  handleDateSelected(event) {
+    this.data = event.detail;
+    this.openModal(event.detail);
+
+    console.log(data);
+  }
+
+  openModal(detail) {
+    if (!this.hasModalTarget) {
+      console.error("Modal target is missing");
+      return;
+    }
+
+    const {dateStart, dateEnd} = detail;
+
+    try {
+      // Initialize the Bootstrap modal
+      const modal = new Modal(this.modalTarget);
+
+      // Update modal content
+      this.modalTarget.querySelector(".modal-body").innerHTML = `
+        <p><strong>Date de début:</strong> ${dateStart}</p>
+        <p><strong>Date de fin:</strong> ${dateEnd}</p>
+      `;
+
+      // Show the modal
+      modal.show();
+    } catch (error) {
+      console.error("Error opening modal:", error);
+    }
+  }
+
+  async saveRequest(event) {
+    event.preventDefault();
+
     try {
       const response = await fetch('/request/add', {
         method: 'POST',
@@ -72,7 +63,7 @@ export default class extends Controller {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest' // Optionnel, utile pour reconnaître les requêtes AJAX
         },
-        body: JSON.stringify({ date: selectedDate })
+        body: JSON.stringify({ request: this.data })
       });
 
       if (!response.ok) {

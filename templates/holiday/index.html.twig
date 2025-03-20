@@ -6,5 +6,11 @@
     {% if is_granted('ROLE_EMPLOYEE') %}
         <p>Email : {{ app.user.email }}</p>
     {% endif %}
-    <div id='calendar' data-controller="calendar" data-holidays='{{ publicHolidays|json_encode|raw }}'></div>
+
+    <div data-controller="calendar" data-user={{ app.user.email}} data-holidays='{{ publicHolidays|json_encode|raw }}'>
+        <div id='calendar'></div>
+
+        <!-- Modal should be a direct child of the controller element -->
+        {{ include('_modal.html.twig') }}
+    </div>
 {% endblock %}

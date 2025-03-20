@@ -30,6 +30,7 @@ final class RequestController extends AbstractController
     public function add(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        dd($data);
         if (!isset($data['date'])) {
             return new JsonResponse(['error' => 'Missing date'], 400);
         }
