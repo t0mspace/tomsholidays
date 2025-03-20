@@ -55,7 +55,7 @@ export default class extends Controller {
 
   async saveRequest(event) {
     event.preventDefault();
-
+    console.log(this.data);
     try {
       const response = await fetch('/request/add', {
         method: 'POST',
@@ -63,7 +63,7 @@ export default class extends Controller {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest' // Optionnel, utile pour reconnaître les requêtes AJAX
         },
-        body: JSON.stringify({ request: this.data })
+        body: JSON.stringify({ data: this.data })
       });
 
       if (!response.ok) {

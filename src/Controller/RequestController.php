@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Event\RequestCreated;
 use App\Repository\RequestRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RequestController extends AbstractController
 {
-    public function __construct(private RequestRepository $requestRepository)
+    public function __construct( private EventDispatcherInterface $eventDispatcher)
     {
     }
 
@@ -30,12 +32,8 @@ final class RequestController extends AbstractController
     public function add(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        dd($data);
-        if (!isset($data['date'])) {
-            return new JsonResponse(['error' => 'Missing date'], 400);
-        }
-
-
-        return new JsonResponse(['message' => 'Date enregistrée avec succès !', 'date' => $data['date']]);
+        $data = $data['data'];
+        $event = new RequestCreated($data['dateStart'], $data['dateEnd'], $data['user']);
+        $this->eventDispatcher->dispatch($event, RequestCreated::NAME);
     }
 }

@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\RequestRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\RequestStatus;
 
 #[ORM\Entity(repositoryClass: RequestRepository::class)]
 class Request
@@ -20,8 +21,8 @@ class Request
     #[ORM\JoinColumn(nullable: false)]
     private ?Employee $employee = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    #[ORM\Column(type: "string", enumType: RequestStatus::class)]
+    private ?RequestStatus $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'manage')]
     private ?Employee $managedBy = null;
@@ -55,12 +56,12 @@ class Request
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): RequestStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(RequestStatus $status): static
     {
         $this->status = $status;
 

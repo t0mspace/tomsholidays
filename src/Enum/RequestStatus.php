@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-enum RequestStatus
+enum RequestStatus: string
 {
-    case pending;
-    case approved;
-    case refused;
+    case PENDING = 'pending';
+    case APPROVED = 'approved';
+    case REFUSED = 'refused';
 }
