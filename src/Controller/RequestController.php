@@ -31,9 +31,14 @@ final class RequestController extends AbstractController
     #[Route('/request/add', name: 'request_add', methods: ['POST'])]
     public function add(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-        $data = $data['data'];
-        $event = new RequestCreated($data['dateStart'], $data['dateEnd'], $data['user']);
-        $this->eventDispatcher->dispatch($event, RequestCreated::NAME);
+        try {
+            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            $data = $data['data'];
+            $event = new RequestCreated($data['dateStart'], $data['dateEnd'], $data['user']);
+            $this->eventDispatcher->dispatch($event, RequestCreated::NAME);
+        } catch (\PDOException|\JsonException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return new JsonResponse(['message' => 'Request enregistrée avec succès !']);
     }
 }

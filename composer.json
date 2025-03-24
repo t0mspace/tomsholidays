@@ -23,7 +23,8 @@
         "symfony/stimulus-bundle": "^2.23",
         "symfony/twig-bundle": "7.2.*",
         "symfony/webpack-encore-bundle": "^2.2",
-        "symfony/yaml": "7.2.*"
+        "symfony/yaml": "7.2.*",
+        "ext-pdo": "*"
     },
     "config": {
         "allow-plugins": {

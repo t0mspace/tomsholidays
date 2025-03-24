@@ -9,6 +9,7 @@ use App\Entity\Request;
 use App\Enum\RequestStatus;
 use App\Repository\EmployeeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use PDOException;
 
 class RequestManager
 {
@@ -23,18 +24,21 @@ class RequestManager
      */
     public function generateFromData(array $requestData): void
     {
+        try {
+            $holiday = new Holiday();
+            $holiday->setDateStart(new \DateTimeImmutable($requestData['startDate']))
+                ->setDateEnd(new \DateTimeImmutable($requestData['endDate']));
 
-        $holiday = new Holiday();
-        $holiday->setDateStart(new \DateTimeImmutable($requestData['startDate']));
-        $holiday->setDateEnd(new \DateTimeImmutable($requestData['endDate']));
+            $requestEntity = new Request();
+            $requestEntity->setEmployee($this->employeeRepository->findByEmail($requestData['userEmail']))
+                ->setHolidays($holiday)
+                ->setStatus(RequestStatus::PENDING)
+                ->setDate(new \DateTimeImmutable("now"));
 
-        $requestEntity = new Request();
-        $requestEntity->setEmployee($this->employeeRepository->findByEmail($requestData['userEmail']));
-        $requestEntity->setHolidays($holiday);
-        $requestEntity->setStatus(RequestStatus::PENDING);
-        $requestEntity->setDate(new \DateTimeImmutable("now"));
-
-        $this->save($requestEntity);
+            $this->save($requestEntity);
+        } catch (PdoException $e) {
+            throw new PdoException("Error while creating request" . $e->getMessage());
+        }
     }
 
     private function save(Request $request): void

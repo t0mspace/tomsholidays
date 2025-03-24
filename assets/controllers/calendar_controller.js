@@ -1,6 +1,6 @@
 import {Controller} from '@hotwired/stimulus';
 import {Modal} from 'bootstrap';
-import initCalendar from '../js/calendar';
+import CalendarManager from '../js/calendarManager';
 
 export default class extends Controller {
   data = {};
@@ -8,7 +8,7 @@ export default class extends Controller {
 
   connect() {
     // Initialize calendar after controller connects
-    this.calendarInstance = initCalendar();
+    this.calendarInstance = CalendarManager.initCalendar();
 
     // Listen for custom event
     this.element.addEventListener('calendar:dateSelected', this.handleDateSelected.bind(this));
@@ -24,8 +24,6 @@ export default class extends Controller {
   handleDateSelected(event) {
     this.data = event.detail;
     this.openModal(event.detail);
-
-    console.log(data);
   }
 
   openModal(detail) {
@@ -53,8 +51,7 @@ export default class extends Controller {
     }
   }
 
-  async saveRequest(event) {
-    event.preventDefault();
+  async confirmRequest(event) {
     console.log(this.data);
     try {
       const response = await fetch('/request/add', {

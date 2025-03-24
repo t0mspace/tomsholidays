@@ -10,7 +10,7 @@ Encore
   .setOutputPath('public/build/')
   .setPublicPath('/build')
   .addEntry('app', './assets/app.js')
-  .addEntry('calendar', './assets/js/calendar.js') // Ajoute cette ligne
+  .addEntry('calendarManager', './assets/js/calendarManager.js') // Ajoute cette ligne
   .splitEntryChunks()
 
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
