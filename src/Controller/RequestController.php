@@ -18,10 +18,11 @@ final class RequestController extends AbstractController
     {
     }
 
-    #[Route('/request', name: 'app_request')]
+    #[Route('/request', name: 'request_list', methods: ['GET'])]
     public function index(): Response
     {
-        $requests = $this->requestRepository->getRequestsByEmployee($this->getUser());
+        $employee = $this->getUser();
+        $requests = $this->requestRepository->getRequestsByEmployee($employee);
 
         return $this->render('request/index.html.twig', ['requests' => $requests]);
     }

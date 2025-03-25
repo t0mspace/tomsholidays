@@ -7,6 +7,7 @@
         <p>Email : {{ app.user.email }}</p>
     {% endif %}
 
+    <a href="{{ path('request_list')}}">List of your requests</a>
     <div data-controller="calendar" data-user={{ app.user.email}} data-holidays='{{ publicHolidays|json_encode|raw }}'>
         <div id='calendar'></div>
 

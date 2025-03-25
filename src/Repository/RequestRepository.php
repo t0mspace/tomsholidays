@@ -17,10 +17,13 @@ class RequestRepository extends ServiceEntityRepository
         parent::__construct($registry, Request::class);
     }
 
-    public function getRequestsByEmployee(Employee $employee): Request
+    public function getRequestsByEmployee(Employee $employee): array
     {
         return $this->createQueryBuilder('request')
-            ->andWhere('request.employee = :employee')
+            ->addSelect('holidays')
+            ->join('request.holidays', 'holidays')
+            ->join('request.employee', 'employee')
+            ->where('employee = :employee')
             ->setParameter('employee', $employee)
             ->getQuery()
             ->getResult();
