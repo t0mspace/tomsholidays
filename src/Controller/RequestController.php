@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Employee;
 use App\Event\RequestCreated;
 use App\Repository\RequestRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,16 +14,16 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RequestController extends AbstractController
 {
-    public function __construct( private EventDispatcherInterface $eventDispatcher)
+    public function __construct( private EventDispatcherInterface $eventDispatcher, private RequestRepository $requestRepository )
     {
     }
 
     #[Route('/request', name: 'app_request')]
     public function index(): Response
     {
-        return $this->render('request/index.html.twig', [
-            'controller_name' => 'RequestController',
-        ]);
+        $requests = $this->requestRepository->getRequestsByEmployee($this->getUser());
+
+        return $this->render('request/index.html.twig', ['requests' => $requests]);
     }
 
     /**
