@@ -1,7 +1,20 @@
 export default class Modal {
   constructor(element) {
     this.element = element; // Élément de la modale
-    this.confirmButton = this.element.querySelector("[data-modal-target='confirmButton']");
+    this.confirmButton = this.element.querySelector("[data-action]");
+    this.closeButtons = this.element.querySelectorAll("[data-close]");
+
+    // Écouteurs d'événements pour fermer la modale
+    this.closeButtons.forEach(button => {
+      button.addEventListener("click", () => this.close());
+    });
+
+    // Gestion de la fermeture en cliquant en dehors de la modale
+    this.element.addEventListener("click", (event) => {
+      if (event.target === this.element) {
+        this.close();
+      }
+    });
   }
 
   open() {
@@ -17,10 +30,26 @@ export default class Modal {
   }
 
   setAction(action) {
-    this.confirmButton.dataset.action = action;
+    if (this.confirmButton) {
+      this.confirmButton.setAttribute("data-action", action);
+    }
   }
 
   setContent(content) {
-    this.element.querySelector("[data-modal-target='content']").innerHTML = content;
+    const contentElement = this.element.querySelector("[data-content]");
+    if (contentElement) {
+      contentElement.innerHTML = content;
+    }
+  }
+
+  setTitle(title) {
+    const contentElement = this.element.querySelector("[data-title]");
+    if (contentElement) {
+      contentElement.innerHTML = title;
+    }
+  }
+
+  setId(id) {
+    this.element.id = id;
   }
 }

@@ -16,7 +16,7 @@ class CalendarManager {
 
       const calendar = new Calendar(calendarEl, {
         plugins: [dayGridPlugin, interactionPlugin],
-        weekends: true,
+        weekends: false,
         selectable: true,
         timeZone: 'local',
         events: publicHolidays.map(event => ({
