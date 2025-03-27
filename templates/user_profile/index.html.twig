@@ -1,7 +1,92 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserProfileController!{% endblock %}
+{% block title %}User profile{% endblock %}
 
 {% block body %}
+    <div class="container">
+        <div class="profile-header text-center">
+            <img src="/api/placeholder/150/150" alt="Photo de profil" class="profile-avatar mb-3">
+            Bienvenue <h1 class="h3">{{ app.user.firstname }}</h1>
+            <p class="text-muted">{{ app.user.email }}</p>
+        </div>
 
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="h4 mb-0">Paramètres du Compte</h2>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="current-password" class="form-label">Mot de passe actuel</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="current-password"
+                                    placeholder="Entrez votre mot de passe actuel"
+                                    required
+                                >
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="new-password" class="form-label">Nouveau mot de passe</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="new-password"
+                                    placeholder="Entrez votre nouveau mot de passe"
+                                    required
+                                    minlength="8"
+                                >
+                                <div class="form-text">
+                                    Le mot de passe doit contenir au moins 8 caractères
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="confirm-password" class="form-label">Confirmer le nouveau mot de passe</label>
+                                <input
+                                    type="password"
+                                    class="form-control"
+                                    id="confirm-password"
+                                    placeholder="Confirmez votre nouveau mot de passe"
+                                    required
+                                    minlength="8"
+                                >
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    Mettre à jour le mot de passe
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h2 class="h4 mb-0">Informations Personnelles</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">{{app.user.firstname}}</label>
+                                <input type="text" class="form-control" value="{{app.user.firstname}}" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">{{app.user.lastname}}</label>
+                                <input type="text" class="form-control" value="{{app.user.lastname}}" readonly>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">{{app.user.email}}</label>
+                            <input type="email" class="form-control" value="email@exemple.com" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
