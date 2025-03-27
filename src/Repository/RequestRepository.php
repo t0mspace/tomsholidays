@@ -29,6 +29,24 @@ class RequestRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * get all requests (for a manager)
+     *
+     * @param Employee $employee
+     * @return array
+     */
+    public function getAllRequests(Employee $employee): array
+    {
+        return $this->createQueryBuilder('request')
+            ->addSelect('holidays')
+            ->join('request.holidays', 'holidays')
+            ->join('request.employee', 'employee')
+            ->where('employee != :employee')
+            ->setParameter('employee', $employee)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Request[] Returns an array of Request objects
     //     */
