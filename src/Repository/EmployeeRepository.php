@@ -23,7 +23,7 @@ class EmployeeRepository extends ServiceEntityRepository
                 ->setParameter('email', $email)
                 ->getQuery()
                 ->getOneOrNullResult()
-            ;
+        ;
     }
 
     //    /**

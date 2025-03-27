@@ -30,7 +30,8 @@ class RequestCreated extends Event
         return $this->userEmail;
     }
 
-    public function getData(): array{
+    public function getData(): array
+    {
         return [
             'startDate' => $this->startDate,
             'endDate' => $this->endDate,

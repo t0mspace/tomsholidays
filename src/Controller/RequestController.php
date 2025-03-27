@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RequestController extends AbstractController
 {
-    public function __construct( private EventDispatcherInterface $eventDispatcher, private RequestRepository $requestRepository )
+    public function __construct(private EventDispatcherInterface $eventDispatcher, private RequestRepository $requestRepository)
     {
     }
 
