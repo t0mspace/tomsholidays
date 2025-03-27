@@ -18,6 +18,7 @@ Encore
   .enableSingleRuntimeChunk()
   .enableStimulusBridge('./assets/controllers.json')
   .enableSassLoader()
+
 ;
 
 module.exports = Encore.getWebpackConfig();

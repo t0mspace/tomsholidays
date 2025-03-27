@@ -5,9 +5,45 @@
 {% block body %}
     {% if is_granted('ROLE_EMPLOYEE') %}
         <p>Email : {{ app.user.email }}</p>
+
+
     {% endif %}
 
+
+
     <a href="{{ path('request_list')}}">List of your requests</a>
+
+    <div class="dropdown">
+        <img src="{{ asset('images/user_icon.svg')}}"
+             class="user-avatar dropdown-toggle float-end"
+             id="userProfileDropdown"
+             data-bs-toggle="dropdown"
+             aria-expanded="false"
+             alt="Photo de profil">
+
+        <ul class="dropdown-menu" aria-labelledby="userProfileDropdown">
+            <li>
+                <a class="dropdown-item" href="#">
+                    <i class="bi bi-person me-2"></i>My profile
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="#">
+                    <i class="bi bi-person me-2"></i>My calendar
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="{{ path('request_list')}}">
+                    <i class="bi bi-person me-2"></i>Requests
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="{{ path('app_logout')}}">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                </a>
+            </li>
+        </ul>
+    </div>
     <div data-controller="calendar" data-user={{ app.user.email}} data-holidays='{{ publicHolidays|json_encode|raw }}'>
         <div id='calendar'></div>
 
