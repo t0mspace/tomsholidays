@@ -7,6 +7,9 @@
         <h2 class="mb-3">Employee Requests</h2>
 
         <div class="accordion" id="requestsAccordion">
+            {% if requests is empty %}
+                <h3>No employee requests found.</h3>
+            {% endif %}
             {% for request in requests %}
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading{{ request.id }}">
@@ -14,22 +17,24 @@
                                 data-bs-target="#collapse{{ request.id }}" aria-expanded="false"
                                 aria-controls="collapse{{ request.id }}">
                             {% set employee = request.employee %}
-                            Request #{{ request.id }} from #{employee.firstname + ' ' +employee.lastname}
+                            Request #{{ request.id }} from {{employee.firstname~ " " ~employee.lastname}}
+                            <strong>Status:</strong>
+                            <span class="badge {{ request.status.getBootstrapClass() }}">
+                                {{ request.status.getLabel() }}
+                            </span>
                         </button>
+
                     </h2>
                     <div id="collapse{{ request.id }}" class="accordion-collapse collapse"
                          aria-labelledby="heading{{ request.id }}" data-bs-parent="#requestsAccordion">
                         <div class="accordion-body">
                             <p><strong>Request sent date</strong> {{ request.date|date('d/m/Y') }}</p>
-                            <p><strong>Status:</strong>
-                                <span class="badge {{ request.status.getBootstrapClass() }}">
-                                {{ request.status.getLabel() }}
-                            </span>
-                            </p>
+
                             <p><strong>Holidays linked</strong></p>
                             <p>from {{ request.holidays.dateStart|date }}</p>
                             <p>to {{ request.holidays.dateEnd|date }}</p>
                         </div>
+                        <a class="btn btn-primary" href="{{ path('app_request_approve',{"id": request.id}) }}" >Approve</a>
                     </div>
                 </div>
             {% endfor %}

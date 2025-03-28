@@ -7,7 +7,9 @@ namespace App\Manager;
 use App\Entity\Holiday;
 use App\Entity\Request;
 use App\Enum\RequestStatus;
+use App\Event\RequestApproved;
 use App\Repository\EmployeeRepository;
+use App\Repository\RequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PDOException;
 
@@ -15,7 +17,8 @@ class RequestManager
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private EmployeeRepository $employeeRepository
+        private EmployeeRepository $employeeRepository,
+        private RequestRepository $requestRepository,
     ) {
     }
 
@@ -39,6 +42,24 @@ class RequestManager
         } catch (PdoException $e) {
             throw new PdoException("Error while creating request" . $e->getMessage());
         }
+    }
+
+    public function approve(RequestApproved $event): void
+    {
+        try{
+            $request = $this->requestRepository->findOneBy(['id'=> $event->getId()]);
+
+            $request->setStatus(RequestStatus::APPROVED)
+                ->setManagedBy($event->getManager())
+                ->setDateManaged(new \DateTimeImmutable("now"));
+
+
+            $this->entityManager->flush();
+        }catch (PDOException $e)
+        {
+            throw new PdoException("Error while approving request" . $e->getMessage());
+        }
+
     }
 
     private function save(Request $request): void

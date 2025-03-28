@@ -65,4 +65,17 @@ class RequestRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getApprovedRequestsByEmployee(?UserInterface $employee)
+    {
+        return $this->createQueryBuilder('request')
+            ->addSelect('holidays')
+            ->join('request.employee', 'employee')
+            ->where('employee != :employee')
+            ->andWhere('request.status = :status')
+            ->setParameter('employee', $employee)
+            ->setParameter('status', 'approved')
+            ->getQuery()
+            ->getResult();
+    }
 }

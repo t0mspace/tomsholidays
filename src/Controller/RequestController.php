@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Employee;
+use App\Event\RequestApproved;
 use App\Event\RequestCreated;
+use App\Repository\EmployeeRepository;
 use App\Repository\RequestRepository;
+use App\Enum\RequestStatus;
+use PDOException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +19,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class RequestController extends AbstractController
 {
+    private $employeeRepository;
+
     public function __construct(private EventDispatcherInterface $eventDispatcher, private RequestRepository $requestRepository)
     {
     }
@@ -51,7 +57,23 @@ final class RequestController extends AbstractController
         $employee = $this->getUser();
         $requests = $this->requestRepository->getAllOtherRequests($employee);
 
-        return $this->render('request/all.html.twig', ['allRequests' => $requests]);
+        return $this->render('request/all.html.twig', ['requests' => $requests]);
+    }
+
+    #[Route('/request/approve', name: 'app_request_approve', methods: ['GET']), IsGranted("ROLE_MANAGER")]
+    public function approve(Request $request, EmployeeRepository $employeeRepository): JsonResponse
+    {
+        try{
+            $manager = $employeeRepository->findByEmail($this->getUser()?->getEmail());
+            $event = new RequestApproved($request->get('id'), RequestStatus::APPROVED,$manager);
+            $this->eventDispatcher->dispatch($event, RequestApproved::NAME);
+        }catch (PDOException $e){
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }catch (\Throwable $e){
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JsonResponse(['message' => 'Demande approuvée !']);
     }
 
 
