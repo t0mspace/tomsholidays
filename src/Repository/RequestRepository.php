@@ -6,6 +6,7 @@ use App\Entity\Employee;
 use App\Entity\Request;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Request>
@@ -24,24 +25,6 @@ class RequestRepository extends ServiceEntityRepository
             ->join('request.holidays', 'holidays')
             ->join('request.employee', 'employee')
             ->where('employee = :employee')
-            ->setParameter('employee', $employee)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * get all requests (for a manager)
-     *
-     * @param Employee $employee
-     * @return array
-     */
-    public function getAllRequests(Employee $employee): array
-    {
-        return $this->createQueryBuilder('request')
-            ->addSelect('holidays')
-            ->join('request.holidays', 'holidays')
-            ->join('request.employee', 'employee')
-            ->where('employee != :employee')
             ->setParameter('employee', $employee)
             ->getQuery()
             ->getResult();
@@ -71,4 +54,15 @@ class RequestRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function getAllOtherRequests(?UserInterface $employee)
+    {
+        return $this->createQueryBuilder('request')
+            ->addSelect('holidays')
+            ->join('request.holidays', 'holidays')
+            ->join('request.employee', 'employee')
+            ->where('employee != :employee')
+            ->setParameter('employee', $employee)
+            ->getQuery()
+            ->getResult();
+    }
 }

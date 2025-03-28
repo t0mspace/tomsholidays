@@ -41,7 +41,6 @@ security:
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }  # Autorise l'accès à la page de connexion
         - { path: ^/holiday, roles: IS_AUTHENTICATED_FULLY }  # Requiert ROLE_EMPLOYEE ou supérieur
-        - { path: ^/admin, roles: ROLE_MANAGER }    # Requiert ROLE_MANAGER
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }  # Toutes les autres URLs requièrent une authentification
 
 when@test:

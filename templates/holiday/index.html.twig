@@ -5,13 +5,7 @@
 {% block body %}
     {% if is_granted('ROLE_EMPLOYEE') %}
         <p>Email : {{ app.user.email }}</p>
-
-
     {% endif %}
-
-
-
-    <a href="{{ path('request_list')}}">List of your requests</a>
 
     <div class="dropdown">
         <img src="{{ asset('images/user_icon.svg')}}"
@@ -34,9 +28,16 @@
             </li>
             <li>
                 <a class="dropdown-item" href="{{ path('request_list')}}">
-                    <i class="bi bi-person me-2"></i>Requests
+                    <i class="bi bi-person me-2"></i>my requests
                 </a>
             </li>
+            {% if is_granted('ROLE_MANAGER') %}
+            <li>
+                <a class="dropdown-item" href="{{ path('all_other_requests')}}">
+                    <i class="bi bi-person me-2"></i>All requests
+                </a>
+            </li>
+            {% endif %}
             <li>
                 <a class="dropdown-item" href="{{ path('app_logout')}}">
                     <i class="bi bi-box-arrow-right me-2"></i>Logout

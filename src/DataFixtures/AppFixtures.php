@@ -28,7 +28,7 @@ class AppFixtures extends Fixture
             ->setEmail("albert_einstein@yopmail.com")
             ->setFirstname('Albert')
             ->setLastname('Einstein')
-            ->setRoles('[ROLE_MANAGER]')
+            ->setRoles(["ROLE_MANAGER"])
             ->setNbrOfLegalVacationDaysRemaining(30)
             ->setPassword('azerty');
 
@@ -39,7 +39,7 @@ class AppFixtures extends Fixture
             ->setEmail("marie_curie@yopmail.com")
             ->setFirstname('Marie')
             ->setLastname('Curie')
-            ->setRoles('[ROLE_MANAGER]')
+            ->setRoles(["ROLE_MANAGER"])
             ->setNbrOfLegalVacationDaysRemaining(30)
             ->setPassword('azerty');
         $employes->add($curie);
@@ -49,7 +49,7 @@ class AppFixtures extends Fixture
             ->setEmail("donald_trump@yopmail.com")
             ->setFirstname("Donald")
             ->setLastname("Trump")
-            ->setRoles('[ROLE_EMPLOYEE]')
+            ->setRoles(["ROLE_EMPLOYEE"])
             ->setNbrOfLegalVacationDaysRemaining(30)
             ->setPassword('azerty');
         $employes->add($trump);
@@ -59,7 +59,7 @@ class AppFixtures extends Fixture
             ->setEmail("barack_obama@yopmail.com")
             ->setFirstname("Barack")
             ->setLastname("Obama")
-            ->setRoles('[ROLE_EMPLOYEE]')
+            ->setRoles(["ROLE_EMPLOYEE"])
             ->setNbrOfLegalVacationDaysRemaining(30)
             ->setPassword('azerty');
         $employes->add($obama);
@@ -69,7 +69,7 @@ class AppFixtures extends Fixture
             ->setEmail("celine_dion@yopmail.com")
             ->setFirstname("Celine")
             ->setLastname("Dion")
-            ->setRoles('[ROLE_EMPLOYEE]')
+            ->setRoles(["ROLE_EMPLOYEE"])
             ->setNbrOfLegalVacationDaysRemaining(30)
             ->setPassword('azerty');
         $employes->add($dion);

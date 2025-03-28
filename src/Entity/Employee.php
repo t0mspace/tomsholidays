@@ -30,7 +30,7 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(type: Types::JSON)]
-    private array $roles = ['ROLE_EMPLOYEE'];
+    private array $roles = [];
 
     #[ORM\ManyToOne(inversedBy: 'employees')]
     private ?Department $department = null;
@@ -209,12 +209,17 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return $this->roles;
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_EMPLOYEE';
+
+        return array_unique($roles);
     }
 
-    public function setRoles(string $roles): self
+    public function setRoles(array $roles): self
     {
-        $this->roles = [$roles];
+        $this->roles = $roles;
+
         return $this;
     }
 

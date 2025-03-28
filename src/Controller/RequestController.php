@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class RequestController extends AbstractController
 {
@@ -43,4 +44,15 @@ final class RequestController extends AbstractController
         }
         return new JsonResponse(['message' => 'Request enregistrée avec succès !']);
     }
+
+    #[Route('/request/all', name: 'all_other_requests', methods: ['GET']), IsGranted("ROLE_MANAGER")]
+    public function getAll(): Response
+    {
+        $employee = $this->getUser();
+        $requests = $this->requestRepository->getAllOtherRequests($employee);
+
+        return $this->render('request/all.html.twig', ['allRequests' => $requests]);
+    }
+
+
 }
