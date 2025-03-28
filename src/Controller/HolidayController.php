@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\HolidayRepository;
 use App\Repository\PublicHolidayRepository;
+use App\Repository\RequestRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class HolidayController extends AbstractController
 {
-    public function __construct(private PublicHolidayRepository $publicHolidayRepository)
+    public function __construct(private PublicHolidayRepository $publicHolidayRepository, private RequestRepository $requestRepository)
     {
     }
 
@@ -19,13 +21,22 @@ final class HolidayController extends AbstractController
     public function index(): Response
     {
         $publicHolidays = $this->publicHolidayRepository->findAll();
+        $myHolidays = $this->requestRepository->getApprovedRequestsByEmployee($this->getUser());
 
-        $formattedHolidays = array_map(function ($holiday) {
+
+        $formattedHolidays = array_map(static function ($holiday) {
             return [
                 'date' => $holiday->getDate()?->format('Y-m-d'), // Convert DateTimeImmutable to string
                 'name' => $holiday->getName(),
             ];
         }, $publicHolidays);
+
+        $formattedMyHolidays = array_map(static function ($holiday) {
+            return [
+                'date' => $holiday->()?->format('Y-m-d'),
+            ];
+        }, $myHolidays);
+
         return $this->render('holiday/index.html.twig', [
             'controller_name' => 'HolidayController',
             'publicHolidays' => $formattedHolidays,
@@ -48,4 +59,6 @@ final class HolidayController extends AbstractController
             'publicHolidays' => $formattedHolidays,
         ]);
     }
+
+
 }

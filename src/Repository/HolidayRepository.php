@@ -2,9 +2,13 @@
 
 namespace App\Repository;
 
+use App\Entity\Employee;
 use App\Entity\Holiday;
+use App\Entity\Request;
+use App\Enum\RequestStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Holiday>
