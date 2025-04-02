@@ -66,10 +66,10 @@ class RequestRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getApprovedRequestsByEmployee(?UserInterface $employee)
+    /*public function getApprovedRequestsByEmployee(?UserInterface $employee)
     {
         return $this->createQueryBuilder('request')
-            ->addSelect('holidays')
+            ->addSelect('holiday')
             ->join('request.employee', 'employee')
             ->where('employee != :employee')
             ->andWhere('request.status = :status')
@@ -77,5 +77,5 @@ class RequestRepository extends ServiceEntityRepository
             ->setParameter('status', 'approved')
             ->getQuery()
             ->getResult();
-    }
+    }*/
 }

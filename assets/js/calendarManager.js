@@ -11,7 +11,9 @@ class CalendarManager {
     if (calendarEl) {
       // Get public holidays from data attribute if it exists
       const publicHolidaysData = calendarEl.closest('[data-holidays]')?.dataset.holidays || '[]'
+      const MyHolidaysData = calendarEl.closest('[data-holidays]')?.dataset.myholidays || '[]'
       const publicHolidays = JSON.parse(publicHolidaysData)
+      const myHolidays = JSON.parse(MyHolidaysData)
       const user = calendarEl.closest('[data-holidays]')?.dataset.user || '{}'
 
       const calendar = new Calendar(calendarEl, {
