@@ -45,7 +45,7 @@
             </li>
         </ul>
     </div>
-    <div data-controller="calendar" data-user={{ app.user.email}} data-holidays='{{ publicHolidays|json_encode|raw }}'>
+    <div data-controller="calendar" data-user={{ app.user.email}} data-holidays='{{ publicHolidays|json_encode|raw }}' data-myholidays='{{ myHolidays|json_encode|raw }}'>
         <div id='calendar'></div>
 
         <!-- Modal should be a direct child of the controller element -->

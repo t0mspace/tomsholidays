@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Exceptions\NotEnoughHolidayException;
 use App\Repository\EmployeeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -200,9 +201,13 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->nbrOfLegalVacationDaysRemaining;
     }
 
-    public function setNbrOfLegalVacationDaysRemaining(int $nbrOfLegalVacationDaysRemaining): static
+    public function setNbrOfLegalVacationDaysRemaining(int $nbrOfdays): static
     {
-        $this->nbrOfLegalVacationDaysRemaining = $nbrOfLegalVacationDaysRemaining;
+        if($nbrOfdays < 0)
+        {
+            throw new NotEnoughHolidayException("Not more holidays");
+        }
+        $this->nbrOfLegalVacationDaysRemaining = $nbrOfdays;
 
         return $this;
     }

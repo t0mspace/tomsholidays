@@ -9,6 +9,7 @@
         "php": ">=8.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-pdo": "*",
         "doctrine/doctrine-bundle": "*",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
@@ -22,9 +23,9 @@
         "symfony/security-bundle": "7.2.*",
         "symfony/stimulus-bundle": "^2.23",
         "symfony/twig-bundle": "7.2.*",
+        "symfony/validator": "7.2.*",
         "symfony/webpack-encore-bundle": "^2.2",
-        "symfony/yaml": "7.2.*",
-        "ext-pdo": "*"
+        "symfony/yaml": "7.2.*"
     },
     "config": {
         "allow-plugins": {

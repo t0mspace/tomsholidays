@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Entity\Employee;
 use App\Entity\Request;
+use App\Enum\RequestStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -66,16 +68,17 @@ class RequestRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /*public function getApprovedRequestsByEmployee(?UserInterface $employee)
+    public function getApprovedRequestsByEmployee(?UserInterface $employee)
     {
         return $this->createQueryBuilder('request')
-            ->addSelect('holiday')
+            ->addSelect('request')
             ->join('request.employee', 'employee')
-            ->where('employee != :employee')
+            ->join('request.holidays', 'holidays')
+            ->where('employee = :employee')
             ->andWhere('request.status = :status')
             ->setParameter('employee', $employee)
-            ->setParameter('status', 'approved')
+            ->setParameter('status', RequestStatus::APPROVED)
             ->getQuery()
             ->getResult();
-    }*/
+    }
 }

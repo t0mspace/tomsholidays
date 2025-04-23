@@ -11,9 +11,10 @@ class CalendarManager {
     if (calendarEl) {
       // Get public holidays from data attribute if it exists
       const publicHolidaysData = calendarEl.closest('[data-holidays]')?.dataset.holidays || '[]'
-      const MyHolidaysData = calendarEl.closest('[data-holidays]')?.dataset.myholidays || '[]'
+      const MyHolidaysData = calendarEl.closest('[data-myholidays]')?.dataset.myholidays || '[]'
       const publicHolidays = JSON.parse(publicHolidaysData)
       const myHolidays = JSON.parse(MyHolidaysData)
+      console.log(myHolidays);
       const user = calendarEl.closest('[data-holidays]')?.dataset.user || '{}'
 
       const calendar = new Calendar(calendarEl, {
@@ -21,12 +22,25 @@ class CalendarManager {
         weekends: false,
         selectable: true,
         timeZone: 'local',
-        events: publicHolidays.map(event => ({
-          title: event.name,
-          start: new Date(event.date).toISOString(),
-          end: new Date(event.date).toISOString(),
-          allDay: true
-        })),
+        eventSources: [
+          {
+            events: publicHolidays.map(event => ({
+              title: event.name,
+              start: new Date(event.date).toISOString(),
+              end: new Date(event.date).toISOString(),
+              allDay: true
+            })),
+            color: '#ff6666' // Red for public holidays
+          },
+          {
+            events: myHolidays.map(holiday => ({
+              start: new Date(holiday.dateStart).toISOString(),
+              end: new Date(holiday.dateEnd).toISOString(),
+              allDay: true
+            })),
+            color: '#3399ff' // Blue for personal holidays
+          }
+        ],
         headerToolbar: {
           left: 'prev,next',
           center: 'title',

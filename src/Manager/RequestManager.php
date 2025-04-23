@@ -8,6 +8,8 @@ use App\Entity\Holiday;
 use App\Entity\Request;
 use App\Enum\RequestStatus;
 use App\Event\RequestApproved;
+use App\Exceptions\NotEnoughHolidayException;
+use App\Exceptions\RequestNotFoundException;
 use App\Repository\EmployeeRepository;
 use App\Repository\RequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,22 +46,34 @@ class RequestManager
         }
     }
 
+    /**
+     * @throws NotEnoughHolidayException
+     * @throws RequestNotFoundException
+     */
     public function approve(RequestApproved $event): void
     {
         try{
             $request = $this->requestRepository->findOneBy(['id'=> $event->getId()]);
-
+            if($request === null){
+                throw new RequestNotFoundException("No request found with the id" .$event->getId());
+            }
             $request->setStatus(RequestStatus::APPROVED)
                 ->setManagedBy($event->getManager())
                 ->setDateManaged(new \DateTimeImmutable("now"));
 
+            $employee = $request->getEmployee();
+
+            $nbrDaysLeft = $employee->getNbrOfLegalVacationDaysRemaining() - $request->getHolidays()?->getIntervalBetweenDates();
+
+            $employee->setNbrOfLegalVacationDaysRemaining($nbrDaysLeft);
 
             $this->entityManager->flush();
         }catch (PDOException $e)
         {
             throw new PdoException("Error while approving request" . $e->getMessage());
+        } catch (NotEnoughHolidayException $e) {
+            throw new NotEnoughHolidayException("Error not enough holidays" . $e->getMessage());
         }
-
     }
 
     private function save(Request $request): void

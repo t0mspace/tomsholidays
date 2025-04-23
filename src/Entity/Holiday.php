@@ -48,4 +48,9 @@ class Holiday
 
         return $this;
     }
+
+    public function getIntervalBetweenDates():int
+    {
+        return $this->dateStart->diff($this->dateEnd)->days;
+    }
 }

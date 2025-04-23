@@ -22,8 +22,8 @@ final class HolidayController extends AbstractController
     public function index(): Response
     {
         $publicHolidays = $this->publicHolidayRepository->findAll();
-        //$myHolidays = $this->requestRepository->getApprovedRequestsByEmployee($this->getUser());
-
+        $myRequests = $this->requestRepository->getApprovedRequestsByEmployee($this->getUser());
+        $myFormattedHolidays = [];
 
         $formattedHolidays = array_map(static function ($holiday) {
             return [
@@ -32,13 +32,17 @@ final class HolidayController extends AbstractController
             ];
         }, $publicHolidays);
 
-        $myFormattedHolidays = [];
-
-
+        foreach ($myRequests as $myRequest) {
+            $myFormattedHolidays[] = [
+                'dateStart' => $myRequest->getHolidays()->getDateStart()?->format('Y-m-d'),
+                'dateEnd' => $myRequest->getHolidays()->getDateEnd()?->format('Y-m-d')
+            ];
+        }
 
         return $this->render('holiday/index.html.twig', [
             'controller_name' => 'HolidayController',
             'publicHolidays' => $formattedHolidays,
+            'myHolidays' => $myFormattedHolidays,
         ]);
     }
 
