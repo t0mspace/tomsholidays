@@ -4,7 +4,14 @@ An application to manage easily the holidays of people in an organisation
 
 Based on:
 
-- Symfony
-- Postgresql
+- Symfony 7
+- PostgreSQL
 - Docker
-- Caddy
+- [FrankenPHP (based on caddy)](https://frankenphp.dev/)
+- Stimulus
+- Bootstrap 5
+- Fullcalendar.io
+
+
+
+
