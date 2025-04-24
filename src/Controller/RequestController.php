@@ -2,13 +2,18 @@
 
 namespace App\Controller;
 
+use App\DTO\HolidayRequestDTO;
 use App\Entity\Employee;
 use App\Event\RequestApproved;
 use App\Event\RequestCreated;
+use App\Exceptions\DatesOverlapingException;
 use App\Repository\EmployeeRepository;
 use App\Repository\RequestRepository;
 use App\Enum\RequestStatus;
+use App\Validator\RequestDatesOverlaping;
+use DateMalformedStringException;
 use PDOException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,9 +24,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class RequestController extends AbstractController
 {
-    private $employeeRepository;
 
-    public function __construct(private EventDispatcherInterface $eventDispatcher, private RequestRepository $requestRepository)
+    public function __construct(
+        private EventDispatcherInterface $eventDispatcher,
+        private RequestRepository        $requestRepository,
+        private ValidatorInterface       $validator
+    )
     {
     }
 
@@ -42,13 +50,22 @@ final class RequestController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-            $data = $data['data'];
-            $event = new RequestCreated($data['dateStart'], $data['dateEnd'], $data['user']);
-            $this->eventDispatcher->dispatch($event, RequestCreated::NAME);
-        } catch (\PDOException|\JsonException $e) {
-            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $dto = new HolidayRequestDTO($data);
+
+            $violations = $this->validator->validate($dto, new RequestDatesOverlaping);
+
+            if (count($violations) > 0) {
+                throw new DatesOverlapingException('Validation failed: ' . (string)$violations);
+            }
+
+            $eventCreated = new RequestCreated($dto);
+            $this->eventDispatcher->dispatch($eventCreated, RequestCreated::NAME);
+        } catch (\PDOException|DateMalformedStringException  $e) {
+            return new JsonResponse('Une erreur système est survenue', Response::HTTP_INTERNAL_SERVER_ERROR);
+        } catch (DatesOverlapingException $e) {
+            return new JsonResponse('Dates choisies déjà prises', Response::HTTP_BAD_REQUEST);
         }
-        return new JsonResponse(['message' => 'Request enregistrée avec succès !']);
+        return new JsonResponse('Request enregistrée avec succès !', Response::HTTP_OK);
     }
 
     #[Route('/request/all', name: 'all_other_requests', methods: ['GET']), IsGranted("ROLE_MANAGER")]
@@ -63,18 +80,16 @@ final class RequestController extends AbstractController
     #[Route('/request/approve', name: 'app_request_approve', methods: ['GET']), IsGranted("ROLE_MANAGER")]
     public function approve(Request $request, EmployeeRepository $employeeRepository): JsonResponse
     {
-        try{
+        try {
             $manager = $employeeRepository->findByEmail($this->getUser()?->getEmail());
-            $event = new RequestApproved($request->get('id'), RequestStatus::APPROVED,$manager);
+            $event = new RequestApproved($request->get('id'), RequestStatus::APPROVED, $manager);
             $this->eventDispatcher->dispatch($event, RequestApproved::NAME);
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }catch (\Throwable $e){
+        } catch (\Throwable $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new JsonResponse(['message' => 'Demande approuvée !']);
     }
-
-
 }
