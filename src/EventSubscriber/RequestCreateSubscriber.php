@@ -19,9 +19,7 @@ class RequestCreateSubscriber implements EventSubscriberInterface
      */
     public function onRequestCreated(RequestCreated $event): void
     {
-        $requestData = $event->getData();
-
-        $this->requestManager->generateFromData($requestData);
+        $this->requestManager->submitForApprobation($event);
     }
 
     public static function getSubscribedEvents(): array

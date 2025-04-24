@@ -2,13 +2,18 @@
 
 namespace App\Repository;
 
+use App\DTO\HolidayRequestDTO;
 use App\Entity\Employee;
+use App\Entity\Holiday;
 use App\Entity\Request;
 use App\Enum\RequestStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<Request>
@@ -80,5 +85,19 @@ class RequestRepository extends ServiceEntityRepository
             ->setParameter('status', RequestStatus::APPROVED)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function checkForDatesOverlapping(HolidayRequestDTO $requestDTO): bool
+    {
+        $dateStart = $requestDTO->dateStart->format('Y-m-d');
+        $dateEnd = $requestDTO->dateEnd->format('Y-m-d');
+        $employeeEmail = $requestDTO->employeeMail;
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = "SELECT has_holiday_overlap('{$dateStart}', '{$dateEnd}','{$employeeEmail}')";
+        $result = $conn->executeQuery($sql)->fetchFirstColumn();
+        return (bool) $result[0];
     }
 }

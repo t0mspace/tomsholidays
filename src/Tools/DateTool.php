@@ -2,6 +2,7 @@
 
 namespace App\Tools;
 
+use App\Entity\Holiday;
 use DateInterval;
 use DatePeriod;
 
@@ -27,5 +28,18 @@ class DateTool
         }
 
         return $array;
+    }
+
+    static function checkDatesOverlap(Holiday $holidays1, Holiday $holidays2): ?int
+    {
+        $overlapStart = max($holidays1->getDateStart(), $holidays2->getDateStart());
+        $overlapEnd = min($holidays1->getDateEnd(), $holidays2->getDateEnd());
+
+        if ($overlapEnd < $overlapStart) {
+            return null; // No overlap
+        }
+
+        // Add one day to make it inclusive
+        return $overlapStart->diff($overlapEnd)->days + 1;
     }
 }

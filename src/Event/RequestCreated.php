@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Event;
 
+use App\DTO\HolidayRequestDTO;
+use App\Entity\Request;
 use App\Repository\EmployeeRepository;
 use Symfony\Contracts\EventDispatcher\Event;
 
@@ -11,35 +13,13 @@ class RequestCreated extends Event
 {
     public const NAME = 'request.created';
 
-    public function __construct(public string $startDate, public string $endDate, public string $userEmail)
+    public function __construct(private readonly HolidayRequestDTO $request)
     {
     }
 
-    public function getStartDate(): string
+    public function getRequest(): HolidayRequestDTO
     {
-        return $this->startDate;
+        return $this->request;
     }
-
-    public function getEndDate(): string
-    {
-        return $this->endDate;
-    }
-
-    public function getUserEmail(): string
-    {
-        return $this->userEmail;
-    }
-
-    public function getData(): array
-    {
-        return [
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
-            'userEmail' => $this->userEmail,
-        ];
-    }
-
-
-
 
 }
