@@ -8,14 +8,12 @@ use App\Entity\Holiday;
 use App\Entity\Request;
 use App\Enum\RequestStatus;
 use App\Event\RequestApproved;
-use App\Event\RequestCreated;
 use App\Exceptions\NotEnoughHolidayException;
 use App\Exceptions\RequestNotFoundException;
 use App\Repository\EmployeeRepository;
 use App\Repository\RequestRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use PDOException;
-use App\Validator\RequestDatesOverlapingValidator;
 
 class RequestManager
 {
@@ -29,24 +27,20 @@ class RequestManager
     /**
      * @throws \DateMalformedStringException
      */
-    public function submitForApprobation(RequestCreated $requestCreated): void
+    public function generateFromData(array $requestData): void
     {
         try {
             $holiday = new Holiday();
-            $holiday
-                ->setDateStart($requestCreated->getRequest()->dateStart)
-                ->setDateEnd($requestCreated->getRequest()->dateEnd);
-
+            $holiday->setDateStart(new \DateTimeImmutable($requestData['startDate']))
+                ->setDateEnd(new \DateTimeImmutable($requestData['endDate']));
 
             $requestEntity = new Request();
-            $requestEntity
-                ->setEmployee($this->employeeRepository->findByEmail($requestCreated->getRequest()->employeeMail))
+            $requestEntity->setEmployee($this->employeeRepository->findByEmail($requestData['userEmail']))
                 ->setHolidays($holiday)
                 ->setStatus(RequestStatus::PENDING)
                 ->setDate(new \DateTimeImmutable("now"));
 
             $this->save($requestEntity);
-
         } catch (PdoException $e) {
             throw new PdoException("Error while creating request" . $e->getMessage());
         }
@@ -63,14 +57,15 @@ class RequestManager
             if($request === null){
                 throw new RequestNotFoundException("No request found with the id" .$event->getId());
             }
-
-
             $request->setStatus(RequestStatus::APPROVED)
                 ->setManagedBy($event->getManager())
                 ->setDateManaged(new \DateTimeImmutable("now"));
 
             $employee = $request->getEmployee();
 
+            $nbrDaysLeft = $employee->getNbrOfLegalVacationDaysRemaining() - $request->getHolidays()?->getIntervalBetweenDates();
+
+            $employee->setNbrOfLegalVacationDaysRemaining($nbrDaysLeft);
 
             $this->entityManager->flush();
         }catch (PDOException $e)

@@ -1,3 +1,4 @@
+import MessageBuilder from './messageBuilder'
 export default class RequestManager {
   static async confirmRequest(data) {
     try {
@@ -5,20 +6,23 @@ export default class RequestManager {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest' // Optionnel, utile pour reconnaître les requêtes AJAX
+          'X-Requested-With': 'XMLHttpRequest'
         },
         body: JSON.stringify({ data: data })
       });
 
       if (!response.ok) {
-        throw new Error(`Erreur serveur: ${response.status}`);
+        throw new Error(`Une erreur est survenue: ${response.status}`);
+      }else{
+        const result = await response.json();
+        MessageBuilder.displayMessage('success',result);
       }
 
-      const result = await response.json();
-      alert(result.message); // Affiche le message de Symfony
+
+      //alert(result.message); // Affiche le message de Symfony
     } catch (error) {
-      console.error("❌ Erreur lors de l'envoi des données :", error);
-      alert("Erreur lors de l'enregistrement de la date.");
+      console.log(error);
+      MessageBuilder.displayMessage('danger',error);
     }
   }
 }
