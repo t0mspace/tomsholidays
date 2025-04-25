@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\DTO\HolidayRequestDTO;
-use App\Entity\Employee;
 use App\Event\RequestApproved;
 use App\Event\RequestCreated;
 use App\Exceptions\DatesOverlapingException;
@@ -24,13 +25,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class RequestController extends AbstractController
 {
-
     public function __construct(
         private EventDispatcherInterface $eventDispatcher,
         private RequestRepository        $requestRepository,
         private ValidatorInterface       $validator
-    )
-    {
+    ) {
     }
 
     #[Route('/request', name: 'request_list', methods: ['GET'])]
@@ -52,7 +51,7 @@ final class RequestController extends AbstractController
             $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
             $dto = new HolidayRequestDTO($data);
 
-            $violations = $this->validator->validate($dto, new RequestDatesOverlaping);
+            $violations = $this->validator->validate($dto, new RequestDatesOverlaping());
 
             if (count($violations) > 0) {
                 throw new DatesOverlapingException('Validation failed: ' . (string)$violations);

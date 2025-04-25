@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use App\Enum\RequestStatus;
 use App\Event\RequestApproved;
-use App\Event\RequestCreated;
 use App\Manager\RequestManager;
 use App\Repository\RequestRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

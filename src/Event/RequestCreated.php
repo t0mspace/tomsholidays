@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Event;
 
 use App\DTO\HolidayRequestDTO;
-use App\Entity\Request;
-use App\Repository\EmployeeRepository;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class RequestCreated extends Event

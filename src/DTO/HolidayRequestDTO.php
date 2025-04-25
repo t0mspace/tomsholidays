@@ -1,10 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\DTO;
 
-use App\Entity\Employee;
 use App\Validator\RequestDatesOverlaping;
-use Symfony\Component\Validator\Constraints\Valid;
 
 readonly class HolidayRequestDTO
 {
@@ -14,7 +14,6 @@ readonly class HolidayRequestDTO
 
     #[RequestDatesOverlaping]
     public array $datas;
-
 
     /**
      * @throws \DateMalformedStringException
@@ -26,8 +25,8 @@ readonly class HolidayRequestDTO
         $this->employeeMail = $data['data']['user'];
         $this->datas = [
             'dateStart' => $this->dateStart,
-            'dateEnd'=> $this->dateEnd,
-            'employee'=>$this->employeeMail
+            'dateEnd' => $this->dateEnd,
+            'employee' => $this->employeeMail
         ];
     }
 }

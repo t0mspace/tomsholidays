@@ -57,9 +57,9 @@ class RequestManager
      */
     public function approve(RequestApproved $event): void
     {
-        try{
-            $request = $this->requestRepository->findOneBy(['id'=> $event->getId()]);
-            if($request === null){
+        try {
+            $request = $this->requestRepository->findOneBy(['id' => $event->getId()]);
+            if ($request === null) {
                 throw new RequestNotFoundException("No request found with the id" .$event->getId());
             }
 
@@ -72,8 +72,7 @@ class RequestManager
 
 
             $this->entityManager->flush();
-        }catch (PDOException $e)
-        {
+        } catch (PDOException $e) {
             throw new PdoException("Error while approving request" . $e->getMessage());
         } catch (NotEnoughHolidayException $e) {
             throw new NotEnoughHolidayException("Error not enough holidays" . $e->getMessage());

@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Validator;
 
-use App\Entity\Request;
 use App\Repository\RequestRepository;
 use Doctrine\DBAL\Exception;
 use Symfony\Component\Validator\Constraint;

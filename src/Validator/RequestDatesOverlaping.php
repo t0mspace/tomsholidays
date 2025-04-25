@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Validator;
 
 use Symfony\Component\Validator\Constraint;
@@ -9,8 +11,6 @@ final class RequestDatesOverlaping extends Constraint
 {
     public string $message = 'This holiday overlaps with an existing one.';
 
-    // You can use #[HasNamedArguments] to make some constraint options required.
-    // All configurable options must be passed to the constructor.
     public function __construct(
         public string $mode = 'strict',
         ?array $groups = null,

@@ -12,7 +12,7 @@ class DateTool
      * @throws \DateMalformedPeriodStringException
      * @throws \DateMalformedIntervalStringException
      */
-    static function getDatesFromRange(
+    public static function getDatesFromRange(
         \DateTimeImmutable $start,
         \DateTimeImmutable $end,
         string $intervalSpec = 'P1D',
@@ -30,7 +30,7 @@ class DateTool
         return $array;
     }
 
-    static function checkDatesOverlap(Holiday $holidays1, Holiday $holidays2): ?int
+    public static function checkDatesOverlap(Holiday $holidays1, Holiday $holidays2): ?int
     {
         $overlapStart = max($holidays1->getDateStart(), $holidays2->getDateStart());
         $overlapEnd = min($holidays1->getDateEnd(), $holidays2->getDateEnd());

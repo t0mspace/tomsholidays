@@ -203,8 +203,7 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setNbrOfLegalVacationDaysRemaining(int $nbrOfdays): static
     {
-        if($nbrOfdays < 0)
-        {
+        if ($nbrOfdays < 0) {
             throw new NotEnoughHolidayException("Not more holidays");
         }
         $this->nbrOfLegalVacationDaysRemaining = $nbrOfdays;

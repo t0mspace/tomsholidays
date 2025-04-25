@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\HolidayRepository;
@@ -47,10 +49,5 @@ class Holiday
         $this->dateEnd = $dateEnd;
 
         return $this;
-    }
-
-    public function getIntervalBetweenDates():int
-    {
-        return $this->dateStart->diff($this->dateEnd)->days;
     }
 }
