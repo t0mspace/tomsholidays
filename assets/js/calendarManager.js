@@ -1,7 +1,7 @@
 import {Calendar} from '@fullcalendar/core'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { parse,subDays } from 'date-fns';
+import { parse,subDays, formatISO } from 'date-fns';
 
 class CalendarManager {
 
@@ -52,9 +52,12 @@ class CalendarManager {
           let endDate = parse(info.endStr, 'yyyy-MM-dd', new Date());
           const parsedEndDate = subDays(endDate, 1);
 
+          const formattedStartDate= formatISO(parsedStartDate);
+          const formattedEndDate= formatISO(parsedEndDate);
+
           const event = new CustomEvent('calendar:dateSelected', {
             bubbles: true, // Make sure this bubbles up
-            detail: {dateStart: parsedStartDate, dateEnd: parsedEndDate, user: user},
+            detail: {dateStart: formattedStartDate, dateEnd: formattedEndDate, employeeEmail: user},
           });
 
           calendarEl.dispatchEvent(event);

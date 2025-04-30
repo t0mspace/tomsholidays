@@ -33,8 +33,8 @@ class RequestManager
         try {
             $holiday = new Holiday();
             $holiday
-                ->setDateStart($requestCreated->getRequest()->dateStart)
-                ->setDateEnd($requestCreated->getRequest()->dateEnd);
+                ->setDateStart($requestCreated->getRequest()->getDateStartAsDateTime())
+                ->setDateEnd($requestCreated->getRequest()->getDateEndAsDateTime());
 
 
             $requestEntity = new Request();

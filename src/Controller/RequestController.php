@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\DTO\HolidayRequestDTO;
+use App\DTO\HolidayRequestToValidateDTO;
 use App\Event\RequestApproved;
 use App\Event\RequestCreated;
 use App\Exceptions\DatesOverlapingException;
@@ -14,6 +15,7 @@ use App\Enum\RequestStatus;
 use App\Validator\RequestDatesOverlaping;
 use DateMalformedStringException;
 use PDOException;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -45,12 +47,9 @@ final class RequestController extends AbstractController
      * @throws \JsonException
      */
     #[Route('/request/add', name: 'request_add', methods: ['POST'])]
-    public function add(Request $request): JsonResponse
+    public function add(#[MapRequestPayload] HolidayRequestToValidateDTO $dto): JsonResponse
     {
         try {
-            $data = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
-            $dto = new HolidayRequestDTO($data);
-
             $violations = $this->validator->validate($dto, new RequestDatesOverlaping());
 
             if (count($violations) > 0) {

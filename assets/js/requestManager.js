@@ -7,17 +7,16 @@ export default class RequestManager {
           'Content-Type': 'application/json',
           'X-Requested-With': 'XMLHttpRequest'
         },
-        body: JSON.stringify({ data: data })
+        body: JSON.stringify({ dateStart: data.dateStart, dateEnd: data.dateEnd, employeeEmail: data.employeeEmail }),
       })
       .then(response => {
         if(!response.ok) {
           throw new Error(`Une erreur est survenue: ${response.status}`);
         }
-        console.log(response)
         return response.json();
       })
         .then(result => {
-          MessageBuilder.displayMessage('success',result.message);
+          MessageBuilder.displayMessage('success',result);
         })
       .catch(error => {
         MessageBuilder.displayMessage('danger',error);

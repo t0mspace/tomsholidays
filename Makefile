@@ -3,7 +3,7 @@
 build:
 	docker compose build --no-cache
 
-up:
+dev:
 	docker compose up --pull always -d --wait
 	@echo ""
 	@echo "🚀 Project is now running at: \033[1;34mhttps://localhost\033[0m"
@@ -21,7 +21,9 @@ front-up:
     fi
 
 
-restart: down up
+start: dev front-up
+
+restart: down dev
 
 data-load:
 	php bin/console doctrine:fixtures:load
