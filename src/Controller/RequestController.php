@@ -79,7 +79,7 @@ final class RequestController extends AbstractController
     public function approve(Request $request, EmployeeRepository $employeeRepository): JsonResponse
     {
         try {
-            $manager = $employeeRepository->findByEmail($this->getUser()?->getEmail());
+            $manager = $employeeRepository->findByEmail($this->getUser()->getEmail());
             $event = new RequestApproved($request->get('id'), RequestStatus::APPROVED, $manager);
             $this->eventDispatcher->dispatch($event, RequestApproved::NAME);
         } catch (PDOException $e) {

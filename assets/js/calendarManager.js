@@ -30,7 +30,7 @@ class CalendarManager {
               end: new Date(event.date).toISOString(),
               allDay: true
             })),
-            color: '#ff6666' // Red for public holidays
+            color: '#ff6666'
           },
           {
             events: myHolidays.map(holiday => ({
@@ -56,7 +56,7 @@ class CalendarManager {
           const formattedEndDate= formatISO(parsedEndDate);
 
           const event = new CustomEvent('calendar:dateSelected', {
-            bubbles: true, // Make sure this bubbles up
+            bubbles: true,
             detail: {dateStart: formattedStartDate, dateEnd: formattedEndDate, employeeEmail: user},
           });
 

@@ -12,6 +12,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EmployeeRepository::class)]
 class Employee implements UserInterface, PasswordAuthenticatedUserInterface
@@ -21,14 +22,15 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $firstname = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $lastname = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
+    #[Assert\NotBlank]
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $firstname;
+    #[Assert\NotBlank]
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $lastname;
+    #[Assert\NotBlank]
+    #[ORM\Column(length: 255, nullable: false)]
+    private string $email;
 
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
@@ -57,8 +59,11 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $nbrOfLegalVacationDaysRemaining = null;
 
-    public function __construct()
+    public function __construct(string $firstname, string $lastname, string $email)
     {
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
+        $this->email = $email;
         $this->requests = new ArrayCollection();
         $this->manage = new ArrayCollection();
     }
@@ -92,7 +97,7 @@ class Employee implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
